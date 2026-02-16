@@ -176,10 +176,36 @@ export default function Home() {
       }}
     >
 
-      {/* ユーザー名 */}
-      <p style={{ fontWeight:'bold' }}>
-        👤{post.profiles?.username}
-      </p>
+      {/* ユーザー情報 */}
+      <div style={{
+        display: 'flex',
+        alignItems:'center',
+        gap:'10px'
+      }}>
+
+        {post.profiles?.avatar_url ? (
+          <img
+          src={post.profiles.avatar_url}
+          alt="avatar"
+          width={40}
+          height={40}
+          style={{borderRadius: '50%'}}
+          />
+        ) : (
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              background: 'gray'
+            }}
+          />
+        )}
+
+        <strong>{post.profiles?.username}</strong>
+
+      </div>
+
 
       {/* 投稿内容 */}
       <p>{post.content}</p>

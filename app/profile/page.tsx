@@ -121,7 +121,7 @@ export default function Profile() {
                     <br />
                     <input
                         type="file"
-                        accept="image/"
+                        accept="image/*"
                         onChange={handleAvatarUpload}
                     />
 
