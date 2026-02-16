@@ -137,7 +137,7 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div className="bg-black min-h-screen text-white p-10">
       <h1>トップページ</h1>
       {user && (
         <>

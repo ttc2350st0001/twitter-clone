@@ -37,7 +37,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div>
+    <div className="bg-black min-h-screen text-white p-10">
       <h2>ログイン</h2>
 
       <input
