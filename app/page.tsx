@@ -137,111 +137,105 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-black min-h-screen text-white p-10">
-      <h1>トップページ</h1>
-      {user && (
-        <>
-        <p>ログイン中: {user.email}</p>
-        <button onClick={() => router.push('/profile')}>
-          プロフィール編集
+    <div className="bg-black min-h-screen text-white flex">
+
+    {/* 左メニュ＝ */}
+    <div className="w-1/4 border-r border-gary-800 p-6 hidden md:block">
+      <h1 className="text-2xl font-bold mb-8">Twitter Clone</h1>
+
+      <div className="space-y-6 text-lg">
+        <button className="block hover:text-blue-480 transition">
+          ホーム
         </button>
 
-        {/*投稿フォーム */}
-        <div>
-          <textarea
-            placeholder="いまどうしてる？"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button onClick={handlePost}>
+        <button
+        onClick={() => router.push('/profile')}
+        className="block hover:text-blue-400 transition"
+        >
+          プロフィール
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="block text-red-500 hover:text-red-400 transition"
+        >
+          ログアウト
+        </button>
+      </div>
+    </div>
+
+    {/* タイムライン */}
+    <div className="w-full md:w-3/4 p-6">
+    
+      {/* 投稿フォーム */}
+      <div className="mb-8 border-b border-gray-800 pb-6">
+        <textarea
+          placeholder="いま何してる？"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="w-full bg-black border border-gray-700 rounded-lg p-3 focus:outline-none focus:border-blue-500"
+        />
+
+        <div className="flex justify-end">
+          <button
+            onClick={handlePost}
+            className="mt-3 bg-blue-500 px-5 py-2 rounded-full font-bold hover:bg-blue-600 transition"
+          >
             投稿
           </button>
         </div>
-
-        <button onClick={handleLogout}>
-          ログアウト  
-        </button>
-
-        <hr />
-
-        {/* 投稿一覧 */}
-<div>
-  {posts.map((post) => (
-    <div
-      key={post.id}
-      style={{
-        border: '1px solid gray',
-        padding: '8px',
-        marginTop: '8px'
-      }}
-    >
-
-      {/* ユーザー情報 */}
-      <div style={{
-        display: 'flex',
-        alignItems:'center',
-        gap:'10px'
-      }}>
-
-        {post.profiles?.avatar_url ? (
-          <img
-          src={post.profiles.avatar_url}
-          alt="avatar"
-          width={40}
-          height={40}
-          style={{borderRadius: '50%'}}
-          />
-        ) : (
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              background: 'gray'
-            }}
-          />
-        )}
-
-        <strong>{post.profiles?.username}</strong>
-
       </div>
 
+ {/* 投稿一覧 */}
+      <div className="space-y-4">
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            className="border border-gray-800 p-4 rounded-xl hover:bg-gray-900 transition"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              {post.profiles?.avatar_url ? (
+                <img
+                  src={post.profiles.avatar_url}
+                  alt="avatar"
+                  className="w-10 h-10 rounded-full object-cover"
+                  />
+              ) : (
+                <div className="w-10 h-10 bg-gray-700 rounded-full"/>
+              )}
 
-      {/* 投稿内容 */}
-      <p>{post.content}</p>
-      <small>{post.created_at}</small>
+              <strong>{post.profiles?.username}</strong>
+            </div>
 
-      {/* 自分の投稿だけ削除ボタン表示 */}
-      {user?.id === post.user_id && (
-        <button
-          onClick={() => handleDelete(post.id)}
-          style={{ marginLeft: '10px', color: 'red' }}
-        >
-          削除
-        </button>
-   )}
-      {/* いいねボタン */}
+            <p className="mb-2">{post.content}</p>
 
-    <button
-      onClick={() => handleLike(post)}
-      style={{
-        marginLeft: '10px',
-        color: post.likes?.some(
-          (like: any) => like.user_id === user?.id
-        )
-          ?'red'
-          :'gray'
-      }}
-    >
-      💛 {post.likes.length ?? 0}
-    </button>
-   
+            <div className="flex items-center gap-4 text-sm text-gray-400">
+              {user?.id === post.user_id && (
+                <button
+                  onClick={() => handleDelete(post.id)}
+                  className="text-red-500 hover:text-red-400"
+                >
+                  削除
+                </button>
+              )}
+
+              <button
+                onClick={() => handleLike(post)}
+                className={`${
+                  post.likes?.some(
+                    (like: any) => like.user_id === user?.id
+                  )
+                    ? 'text-red-500'
+                    : 'text-gray-400'
+                } hover:text-red-400`}
+              >
+                💛 {post.likes.length ?? 0}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  ))}
-</div>
-
-        </>
-      )}
     </div>
   )
 }
