@@ -9,6 +9,7 @@ export default function Home() {
   const [user, setUser] = useState<any>(null)
   const [text, setText] = useState('')
   const [posts, setPosts] = useState<any[]>([])
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     const getUser = async () => {
@@ -71,6 +72,23 @@ export default function Home() {
     fetchPosts()
   }
 }, [user])
+
+useEffect(() => {
+  const channel = supabase
+  .channel('realtime-posts')
+  .on(
+    'postgres_changes',
+    {event:'*',schema:'public',table:'posts'},
+    () => {
+      fetchPosts()
+    }
+  )
+  .subscribe()
+
+  return () => {
+    supabase.removeChannel(channel)
+  }
+},[])
   
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -139,6 +157,53 @@ export default function Home() {
   return (
     <div className="bg-black min-h-screen text-white flex">
 
+    {/* モバイルメニュー */}
+{isOpen && (
+  <div className="fixed inset-0 z-50 flex">
+    {/* 背景 */}
+    <div
+      className="fixed inset-0 bg-black/50"
+      onClick={() => setIsOpen(false)}
+    />
+
+    {/* メニュー本体 */}
+    <div className="relative w-64 bg-black border-r border-gray-800 p-6">
+      <button
+        onClick={() => setIsOpen(false)}
+        className="mb-6 text-right w-full"
+      >
+        ✕
+      </button>
+
+      <h1 className="text-2xl font-bold mb-8">Twitter Clone</h1>
+
+      <div className="space-y-6 text-lg">
+        <button className="block hover:text-blue-400 transition">
+          ホーム
+        </button>
+
+        <button
+          onClick={() => {
+            router.push('/profile')
+            setIsOpen(false)
+          }}
+          className="block hover:text-blue-400 transition"
+        >
+          プロフィール
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="block text-red-500 hover:text-red-400 transition"
+        >
+          ログアウト
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     {/* 左メニュ＝ */}
     <div className="w-1/4 border-r border-gary-800 p-6 hidden md:block">
       <h1 className="text-2xl font-bold mb-8">Twitter Clone</h1>
@@ -166,6 +231,17 @@ export default function Home() {
 
     {/* タイムライン */}
     <div className="w-full md:w-3/4 p-6">
+
+    {/* モバイル用ヘッダー */}
+    <div className="md:hidden flex items-center mb-4">
+      <button
+      onClick={() => setIsOpen(true)}
+      className="text-2xl"
+      >
+      ☰
+      </button>
+      <h1 className="ml-4 font-bold">Twitter Clone</h1>
+    </div>
     
       {/* 投稿フォーム */}
       <div className="mb-8 border-b border-gray-800 pb-6">
