@@ -153,6 +153,17 @@ useEffect(() => {
     fetchPosts()
 
   }
+  //時間表示
+  const formatTimeAgo =(dateString: string) => {
+    const now = new Date()
+    const postDate = new Date(dateString)
+    const diff = Math.floor((now.getTime() - postDate.getTime()) / 1000)
+
+    if(diff < 60) return `${diff}秒前`
+    if(diff < 3600) return `${Math.floor(diff / 60)}分前`
+    if(diff < 86400) return `${Math.floor(diff / 3600)}時間前`
+    return `${Math.floor(diff / 86400)}日前`
+  }
 
   return (
     <div className="bg-black min-h-screen text-white flex">
@@ -280,9 +291,13 @@ useEffect(() => {
                 <div className="w-10 h-10 bg-gray-700 rounded-full"/>
               )}
 
+              <div className="flex items-center gap-2">
               <strong>{post.profiles?.username}</strong>
+              <span className="text-sm text-gray-500">
+                {formatTimeAgo(post.created_at)}
+              </span>
             </div>
-
+            </div>
             <p className="mb-2">{post.content}</p>
 
             <div className="flex items-center gap-4 text-sm text-gray-400">
